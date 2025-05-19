@@ -1,7 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="1024" height="1024" rx="224" fill="#007AFF"/>
-    <path d="M512 256C384.5 256 280 360.5 280 488C280 615.5 384.5 720 512 720C639.5 720 744 615.5 744 488C744 360.5 639.5 256 512 256ZM512 664C420.5 664 352 595.5 352 504C352 412.5 420.5 344 512 344C603.5 344 672 412.5 672 504C672 595.5 603.5 664 512 664Z" fill="white"/>
-    <path d="M512 384C466.5 384 432 418.5 432 464C432 509.5 466.5 544 512 544C557.5 544 592 509.5 592 464C592 418.5 557.5 384 512 384Z" fill="white"/>
-    <path d="M512 576C466.5 576 432 610.5 432 656C432 701.5 466.5 736 512 736C557.5 736 592 701.5 592 656C592 610.5 557.5 576 512 576Z" fill="white"/>
-</svg> 
+<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <!-- Black background with subtle rounded corners for macOS style -->
+  <rect width="1024" height="1024" rx="180" ry="180" fill="#000000"/>
+  
+  <!-- Sequence of Rs behind main R -->
+  <text x="350" y="650" font-family="SF Pro Display, -apple-system, sans-serif" font-size="720" font-weight="600" fill="#1a1a1a" text-anchor="middle" dominant-baseline="middle">R</text>
+  <text x="450" y="650" font-family="SF Pro Display, -apple-system, sans-serif" font-size="720" font-weight="600" fill="#2a2a2a" text-anchor="middle" dominant-baseline="middle">R</text>
+  <text x="550" y="650" font-family="SF Pro Display, -apple-system, sans-serif" font-size="720" font-weight="600" fill="#333333" text-anchor="middle" dominant-baseline="middle">R</text>
+  <text x="650" y="650" font-family="SF Pro Display, -apple-system, sans-serif" font-size="720" font-weight="600" fill="#404040" text-anchor="middle" dominant-baseline="middle">R</text>
+  
+  <!-- Main prominent white R filling the frame -->
+  <text x="512" y="650" font-family="SF Pro Display, -apple-system, sans-serif" font-size="720" font-weight="600" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">R</text>
+</svg>

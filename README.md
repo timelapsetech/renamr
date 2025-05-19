@@ -7,8 +7,11 @@ A modern macOS application for batch file renaming with a focus on images and ot
 ## Features
 
 - **Clean, Modern Interface**: Drag-and-drop UI with native macOS controls
-- **Sequential Renaming**: Number files in sequence with customizable base names and padding
-- **Smart Date Ordering**: When using sequential mode, files are automatically ordered by date (EXIF date for images, then file modification date)
+- **Smart Sequential Renaming**: 
+  - Automatic underscore insertion between basename and number
+  - Automatic basename suggestion from folder name
+  - Configurable number padding and start number
+  - Files processed in date order (oldest first)
 - **Non-Sequential Options**:
   - Date & Time based naming (using EXIF data when available)
   - Random unique name generation
@@ -16,7 +19,6 @@ A modern macOS application for batch file renaming with a focus on images and ot
   - Rename in place or to a separate output directory
   - File extension filtering
   - Support for all file types with special handling for images
-- **Preset Templates**: Quick access to common naming patterns
 - **Progress Tracking**: Real-time progress monitoring for large batches
 - **Dark/Light Mode Support**: Automatically adapts to your macOS appearance settings
 
@@ -41,7 +43,8 @@ A modern macOS application for batch file renaming with a focus on images and ot
 4. Click "Start Renaming"
 
 ### Sequential Renaming
-- Enter a base name (e.g., "Photo_")
+- Enter a base name (e.g., "Photo")
+- The app will automatically add an underscore before the number
 - Set the number padding (e.g., 3 digits: 001, 002, etc.)
 - Choose a starting number
 - Files will be processed in date order (oldest first)
@@ -50,9 +53,17 @@ A modern macOS application for batch file renaming with a focus on images and ot
 - **Date & Time**: Names files based on their capture date or modification date
 - **Random**: Generates unique random names with configurable length
 
-### Output Options
-- Toggle "Rename in place" to modify files in their original location
-- When unchecked, drag a destination folder to copy renamed files to that location
+## Version History
+
+### 1.1.0
+- Added automatic underscore insertion
+- Added automatic basename suggestion from folder name
+- Improved window sizing and layout
+- Simplified renaming interface
+- New application icon
+
+### 1.0.0
+- Initial release
 
 ## Development
 

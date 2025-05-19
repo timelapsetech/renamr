@@ -39,13 +39,13 @@ struct ContentView: View {
                         .foregroundColor(.secondary)
                     Spacer()
                 }
-                .padding(.horizontal)
+                .padding(.horizontal, 10)
                 
                 // Combined Options Section
                 VStack(alignment: .leading, spacing: 8) {
                     // Mode Selector
                     Toggle("Rename Files Sequentially", isOn: $viewModel.sequentialMode)
-                        .padding(.horizontal)
+                        .padding(.horizontal, 10)
                     
                     // All Options Container
                     VStack(alignment: .leading, spacing: 15) {
@@ -58,28 +58,9 @@ struct ContentView: View {
                                 Text("Base Name:")
                                 TextField("Enter base name", text: $viewModel.basename)
                                     .textFieldStyle(.roundedBorder)
-                                
-                                Menu {
-                                    ForEach(viewModel.presets.keys.sorted(), id: \.self) { key in
-                                        Button(viewModel.presets[key] ?? key) {
-                                            viewModel.selectPreset(key)
-                                        }
-                                    }
-                                } label: {
-                                    Label("Presets", systemImage: "list.bullet")
-                                }
                             }
                             .disabled(!viewModel.sequentialMode)
                             .opacity(viewModel.sequentialMode ? 1.0 : 0.5)
-                            
-                            if viewModel.showingDateInfo && viewModel.sequentialMode {
-                                Text("Note: Date-based naming will use image EXIF date when available, then file modification date, then current date.")
-                                    .font(.footnote)
-                                    .foregroundColor(.secondary)
-                                    .padding(.horizontal)
-                                    .padding(.bottom, 5)
-                                    .fixedSize(horizontal: false, vertical: true)
-                            }
                         }
                         
                         // Sequential Options (Number Padding)
@@ -144,7 +125,7 @@ struct ContentView: View {
                         // Rename In Place Toggle
                         Toggle("Rename in place", isOn: $viewModel.renameInPlace)
                     }
-                    .padding()
+                    .padding(10)
                     .background(
                         RoundedRectangle(cornerRadius: 10)
                             .fill(Color.gray.opacity(0.1))
@@ -188,9 +169,9 @@ struct ContentView: View {
                 
                 Spacer(minLength: 20)
             }
-            .padding(.horizontal)
+            .padding(.horizontal, 10)
         }
-        .frame(minWidth: 500, idealWidth: 500, maxWidth: 500, minHeight: 640, idealHeight: viewModel.renameInPlace ? 640 : 720, maxHeight: 800)
+        .frame(minWidth: 380, idealWidth: 380, maxWidth: 380, minHeight: 640, idealHeight: viewModel.renameInPlace ? 640 : 720, maxHeight: 800)
         .background(colorScheme == .dark ? Color.black : Color.white)
         .onAppear {
             // Reset URL on app launch

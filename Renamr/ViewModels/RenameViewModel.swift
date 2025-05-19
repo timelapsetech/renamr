@@ -40,8 +40,12 @@ class RenameViewModel: ObservableObject {
     @Published var isUsingDatePattern: Bool = false
     @Published var showingDateInfo: Bool = false
     
+    // Store the base date for time lapse sequences
+    private var timeLapseBaseDate: String?
+    
     // Presets for base name patterns
     let presets = [
+        "Manual": "Manual Entry",
         "TimelapseSequence": "Time Lapse Sequence",
         "DateSequence": "Date Sequence (YYYYMMDD_)",
         "IMG_": "Simple (IMG_)",
@@ -52,24 +56,36 @@ class RenameViewModel: ObservableObject {
     private var currentOperation: Task<Void, Never>?
     private var usedRandomNames = Set<String>()
     
+    init() {
+        // Set Manual as the default option
+        selectPreset("Manual")
+    }
+    
     var canStartRenaming: Bool {
         sourceURL != nil && (sequentialMode ? !basename.isEmpty : true) && (renameInPlace || outputURL != nil)
     }
     
     func selectPreset(_ key: String) {
-        if key == "TimelapseSequence" {
+        if key == "Manual" {
+            basename = ""
+            showingDateInfo = false
+            timeLapseBaseDate = nil
+        } else if key == "TimelapseSequence" {
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyyMMdd"
             basename = formatter.string(from: Date()) + "1CO_"
             showingDateInfo = true
+            timeLapseBaseDate = nil
         } else if key == "DateSequence" {
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyyMMdd"
             basename = formatter.string(from: Date()) + "_"
             showingDateInfo = true
+            timeLapseBaseDate = nil
         } else {
             basename = key
             showingDateInfo = false
+            timeLapseBaseDate = nil
         }
     }
     
@@ -82,12 +98,25 @@ class RenameViewModel: ObservableObject {
                     if let urlData = urlData as? Data,
                        let url = NSURL(dataRepresentation: urlData, relativeTo: nil) as URL? {
                         self.sourceURL = url
+                        // Set default basename from folder name
+                        self.setDefaultBasename(from: url)
                     }
                 }
             }
             return true
         }
         return false
+    }
+    
+    private func setDefaultBasename(from url: URL) {
+        let folderName = url.lastPathComponent
+        if let underscoreIndex = folderName.firstIndex(of: "_") {
+            // If underscore found, use everything before it
+            basename = String(folderName[..<underscoreIndex])
+        } else {
+            // If no underscore, use the whole folder name
+            basename = folderName
+        }
     }
     
     func handleOutputDrop(_ providers: [NSItemProvider]) -> Bool {
@@ -113,13 +142,6 @@ class RenameViewModel: ObservableObject {
         isProcessing = true
         progress = 0
         usedRandomNames.removeAll()
-        
-        // For sequential mode, check if we're using a date-based naming pattern
-        if sequentialMode {
-            isUsingDatePattern = basename.contains("YYYYMMDD") || 
-                                 basename.hasSuffix("1CO_") || 
-                                 basename.hasSuffix("_")
-        }
         
         currentOperation = Task {
             do {
@@ -235,25 +257,9 @@ class RenameViewModel: ObservableObject {
         let paddedNumber = String(format: "%0\(numberPadding)d", currentNumber)
         let fileExtension = fileURL.pathExtension
         
-        // For date-based patterns, extract the date from the file
-        if isUsingDatePattern {
-            var datePrefix = ""
-            
-            // If it's a TimeLapseSequence (with 1CO_) or a DateSequence (with _)
-            if basename.hasSuffix("1CO_") || basename.hasSuffix("_") {
-                datePrefix = getDatePrefix(from: fileURL)
-                
-                if basename.hasSuffix("1CO_") {
-                    return "\(datePrefix)1CO_\(paddedNumber).\(fileExtension)"
-                } else {
-                    return "\(datePrefix)_\(paddedNumber).\(fileExtension)"
-                }
-            }
-            
-            return "\(basename)\(paddedNumber).\(fileExtension)"
-        } else {
-            return "\(basename)\(paddedNumber).\(fileExtension)"
-        }
+        // Add underscore if basename doesn't end with one
+        let separator = basename.hasSuffix("_") ? "" : "_"
+        return "\(basename)\(separator)\(paddedNumber).\(fileExtension)"
     }
     
     // NON-SEQUENTIAL NAMING LOGIC
