@@ -2,7 +2,7 @@
 
 A modern macOS application for batch file renaming with a focus on images and other files. Renamr features a clean, intuitive interface and powerful renaming capabilities.
 
-![Renamr Application](Resources/app_screenshot.png)
+![Renamr Application](Renamr/Resources/app_screenshot.png)
 
 ## Features
 
@@ -30,7 +30,7 @@ A modern macOS application for batch file renaming with a focus on images and ot
 
 ## Installation
 
-1. Download the latest release from the [Releases](https://github.com/your-username/renamr/releases) page
+1. Download the latest release from the [Releases](https://github.com/timelapsetech/renamr/releases) page
 2. Drag Renamr.app to your Applications folder
 3. Launch from Applications or Spotlight
 
