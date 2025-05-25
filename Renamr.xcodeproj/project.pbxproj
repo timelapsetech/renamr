@@ -14,6 +14,8 @@
 		1A1A1A1A1A1A1A1A1A1A1A37 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1A1A1A1A1A1A1A1A1A1A38 /* AppDelegate.swift */; };
 		1A1A1A1A1A1A1A1A1A1A1A40 /* Renamr.icns in Resources */ = {isa = PBXBuildFile; fileRef = 1A1A1A1A1A1A1A1A1A1A1A41 /* Renamr.icns */; };
 		C28C9AA32DD8181C003101EA /* RenameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28C9AA22DD8181C003101EA /* RenameViewModel.swift */; };
+		C2EE053D2DE3CA2000505B6E /* PreviewFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EE053B2DE3CA2000505B6E /* PreviewFile.swift */; };
+		C2EE053F2DE3CAA500505B6E /* PreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EE053E2DE3CAA500505B6E /* PreviewView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +30,8 @@
 		1A1A1A1A1A1A1A1A1A1A1A43 /* icon_generator.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = icon_generator.py; sourceTree = "<group>"; };
 		C28C9AA22DD8181C003101EA /* RenameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameViewModel.swift; sourceTree = "<group>"; };
 		C28C9AA42DD81EBC003101EA /* RenamrRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RenamrRelease.entitlements; sourceTree = "<group>"; };
+		C2EE053B2DE3CA2000505B6E /* PreviewFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewFile.swift; sourceTree = "<group>"; };
+		C2EE053E2DE3CAA500505B6E /* PreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,6 +56,7 @@
 		1A1A1A1A1A1A1A1A1A1A1A29 /* Renamr */ = {
 			isa = PBXGroup;
 			children = (
+				C2EE053C2DE3CA2000505B6E /* Models */,
 				C28C9AA42DD81EBC003101EA /* RenamrRelease.entitlements */,
 				1A1A1A1A1A1A1A1A1A1A1A1B /* RenamrApp.swift */,
 				1A1A1A1A1A1A1A1A1A1A1A38 /* AppDelegate.swift */,
@@ -75,6 +80,7 @@
 		1A1A1A1A1A1A1A1A1A1A1A2B /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				C2EE053E2DE3CAA500505B6E /* PreviewView.swift */,
 				1A1A1A1A1A1A1A1A1A1A1A1D /* ContentView.swift */,
 				1A1A1A1A1A1A1A1A1A1A1A1F /* DirectoryDropZone.swift */,
 				1A1A1A1A1A1A1A1A1A1A1A21 /* FileFilterSection.swift */,
@@ -104,6 +110,14 @@
 				1A1A1A1A1A1A1A1A1A1A1A43 /* icon_generator.py */,
 			);
 			path = Utilities;
+			sourceTree = "<group>";
+		};
+		C2EE053C2DE3CA2000505B6E /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				C2EE053B2DE3CA2000505B6E /* PreviewFile.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -176,6 +190,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				C28C9AA32DD8181C003101EA /* RenameViewModel.swift in Sources */,
+				C2EE053F2DE3CAA500505B6E /* PreviewView.swift in Sources */,
+				C2EE053D2DE3CA2000505B6E /* PreviewFile.swift in Sources */,
 				1A1A1A1A1A1A1A1A1A1A1A1C /* ContentView.swift in Sources */,
 				1A1A1A1A1A1A1A1A1A1A1A1E /* DirectoryDropZone.swift in Sources */,
 				1A1A1A1A1A1A1A1A1A1A1A20 /* FileFilterSection.swift in Sources */,
@@ -319,7 +335,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 1.2;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
 				ENABLE_PREVIEWS = YES;
@@ -332,7 +348,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.timelapsetech.renamr;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -350,7 +366,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 1.2;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 2D8MBBQWXH;
@@ -365,7 +381,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.timelapsetech.renamr;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
