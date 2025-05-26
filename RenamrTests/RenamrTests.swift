@@ -52,8 +52,8 @@ final class RenameViewModelTests: XCTestCase {
         // Create files with different dates
         let date1 = Date(timeIntervalSince1970: 1000)
         let date2 = Date(timeIntervalSince1970: 2000)
-        let fileA = createFile(named: "A.jpg", date: date2)
-        let fileB = createFile(named: "B.jpg", date: date1)
+        _ = createFile(named: "A.jpg", date: date2)
+        _ = createFile(named: "B.jpg", date: date1)
         viewModel.sourceURL = tempDir
         viewModel.sequentialMode = true
         viewModel.basename = "Test"
@@ -80,7 +80,7 @@ final class RenameViewModelTests: XCTestCase {
         viewModel.generatePreview()
         let exp = expectation(description: "Preview")
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) { exp.fulfill() }
-        wait(for: [exp], timeout: 2)
+        await fulfillment(of: [exp], timeout: 2)
         print("Preview files:", viewModel.previewFiles.map { $0.sourceURL.lastPathComponent })
         print("Temp dir contents before renaming:", try! FileManager.default.contentsOfDirectory(atPath: tempDir.path))
         print("Output dir contents before renaming:", try! FileManager.default.contentsOfDirectory(atPath: outputDir.path))
@@ -91,7 +91,7 @@ final class RenameViewModelTests: XCTestCase {
         print("Test expects output file at:", expectedOutputPath)
         print("Resolved output path for assertion:", resolvedOutputPath)
         await viewModel.startRenaming()
-        Thread.sleep(forTimeInterval: 0.5) // Wait for file system sync
+        try await Task.sleep(nanoseconds: 500_000_000) // Wait for file system sync
         print("Temp dir contents after renaming:", try! FileManager.default.contentsOfDirectory(atPath: tempDir.path))
         print("Output dir contents after renaming:", try! FileManager.default.contentsOfDirectory(atPath: outputDir.path))
         // File should exist in both source and output

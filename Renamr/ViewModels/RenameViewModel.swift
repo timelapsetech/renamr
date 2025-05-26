@@ -185,8 +185,8 @@ public class RenameViewModel: ObservableObject {
     func startRenaming() {
         guard !previewFiles.isEmpty else { return }
         
-        let previewFilesCopy = previewFiles
-        currentOperation = Task {
+        let previewFilesCopy = self.previewFiles
+        currentOperation = Task { [previewFilesCopy] in
             await MainActor.run {
                 isProcessing = true
                 progress = 0
@@ -368,11 +368,11 @@ public class RenameViewModel: ObservableObject {
         if let exifDate = getExifDate(from: fileURL) {
             date = exifDate
         }
-        // Try file modification date next
-        else if let modDate = getFileModificationDate(from: fileURL) {
-            date = modDate
+        // Try file creation date next
+        else if let creationDate = getFileCreationDate(fileURL) {
+            date = creationDate
         }
-        // Fall back to current date/time
+        // If no date is available, use a timestamp to ensure uniqueness
         else {
             date = Date()
         }
@@ -387,35 +387,39 @@ public class RenameViewModel: ObservableObject {
         return "\(baseString)-\(String(format: "%03d", milliseconds))"
     }
     
-    private func getFileModificationDate(from fileURL: URL) -> Date? {
+    public func getFileCreationDate(_ fileURL: URL) -> Date? {
         do {
-            let resourceValues = try fileURL.resourceValues(forKeys: [.contentModificationDateKey])
-            return resourceValues.contentModificationDate
+            let resourceValues = try fileURL.resourceValues(forKeys: [.creationDateKey])
+            return resourceValues.creationDate
         } catch {
-            print("Error reading file modification date: \(error)")
             return nil
         }
     }
     
-    private func getDatePrefix(from fileURL: URL) -> String {
-        // Try to get date from EXIF data first (for images)
-        if let exifDate = getExifDate(from: fileURL) {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyyMMdd"
-            return formatter.string(from: exifDate)
-        }
-        
-        // Try to get file modification date as fallback
-        if let modificationDate = getFileModificationDate(from: fileURL) {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyyMMdd"
-            return formatter.string(from: modificationDate)
-        }
-        
-        // Use current date as final fallback
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyyMMdd"
-        return formatter.string(from: Date())
+    // Also handle picker-based folder selection
+    func setSourceURLFromPicker(_ url: URL) {
+        self.sourceURL = url
+        self.suggestBasenameFromSourceURL()
+        self.previewFiles = []
+        self.previewGenerated = false
+    }
+    
+    private func suggestBasenameFromSourceURL() {
+        guard let url = sourceURL else { return }
+        let folderName = url.lastPathComponent
+        // Remove trailing numbers/underscores if present
+        let base = folderName.replacingOccurrences(of: #"[_\d]+$"#, with: "", options: .regularExpression)
+        self.basename = base
+    }
+    
+    public func performRename() async {
+        // Implementation of performRename method
+    }
+    
+    public func outputFileExists(named name: String) -> Bool {
+        guard let outputURL = outputURL else { return false }
+        let path = outputURL.appendingPathComponent(name).resolvingSymlinksInPath().path
+        return FileManager.default.fileExists(atPath: path)
     }
     
     func getExifDate(from fileURL: URL) -> Date? {
@@ -475,40 +479,5 @@ public class RenameViewModel: ObservableObject {
             return creation
         }
         return nil
-    }
-    
-    func getFileCreationDate(_ fileURL: URL) -> Date? {
-        do {
-            let resourceValues = try fileURL.resourceValues(forKeys: [.creationDateKey])
-            return resourceValues.creationDate
-        } catch {
-            return nil
-        }
-    }
-    
-    // Also handle picker-based folder selection
-    func setSourceURLFromPicker(_ url: URL) {
-        self.sourceURL = url
-        self.suggestBasenameFromSourceURL()
-        self.previewFiles = []
-        self.previewGenerated = false
-    }
-    
-    private func suggestBasenameFromSourceURL() {
-        guard let url = sourceURL else { return }
-        let folderName = url.lastPathComponent
-        // Remove trailing numbers/underscores if present
-        let base = folderName.replacingOccurrences(of: #"[_\d]+$"#, with: "", options: .regularExpression)
-        self.basename = base
-    }
-    
-    public func performRename() async {
-        // Implementation of performRename method
-    }
-    
-    public func outputFileExists(named name: String) -> Bool {
-        guard let outputURL = outputURL else { return false }
-        let path = outputURL.appendingPathComponent(name).resolvingSymlinksInPath().path
-        return FileManager.default.fileExists(atPath: path)
     }
 } 

@@ -43,18 +43,31 @@ struct ConfigView: View {
                 }
                 
                 // File Filters Section
-                HStack {
-                    Text("File Extension:")
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Input Filter")
                         .font(.headline)
-                    TextField("ext", text: $viewModel.extensionFilter)
-                        .textFieldStyle(.roundedBorder)
-                        .frame(width: 80)
-                    Text("(leave empty for all files)")
+                    
+                    HStack {
+                        Text("File Extension:")
+                        TextField("ext", text: $viewModel.extensionFilter)
+                            .textFieldStyle(.roundedBorder)
+                            .frame(width: 80)
+                        Text("(leave empty to include all files)")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        Spacer()
+                    }
+                    Text("Only files with this extension will be included in the rename operation")
                         .font(.caption)
                         .foregroundColor(.secondary)
-                    Spacer()
+                        .fixedSize(horizontal: false, vertical: true)
                 }
                 .padding(.horizontal, 10)
+                .padding(.vertical, 8)
+                .background(
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(Color.gray.opacity(0.05))
+                )
                 
                 // Combined Options Section
                 VStack(alignment: .leading, spacing: 8) {
@@ -67,81 +80,99 @@ struct ConfigView: View {
                         Text("Rename Options")
                             .font(.headline)
                         
-                        // Sequential Options (Base Name)
-                        VStack(alignment: .leading) {
-                            HStack {
-                                Text("Base Name:")
-                                TextField("Enter base name", text: $viewModel.basename)
-                                    .textFieldStyle(.roundedBorder)
+                        // Sequential Options Group
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Sequential Options")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                            
+                            VStack(alignment: .leading, spacing: 10) {
+                                // Base Name
+                                HStack {
+                                    Text("Base Name:")
+                                    TextField("Enter base name", text: $viewModel.basename)
+                                        .textFieldStyle(.roundedBorder)
+                                }
+                                
+                                // Number Padding
+                                HStack {
+                                    Text("Number Padding:")
+                                    Stepper(value: $viewModel.numberPadding, in: 1...10) {
+                                        Text("\(viewModel.numberPadding) digits")
+                                    }
+                                }
+                                
+                                // Start Number
+                                HStack {
+                                    Text("Start Number:")
+                                    TextField("", value: $viewModel.startNumber, formatter: NumberFormatter())
+                                        .textFieldStyle(.roundedBorder)
+                                        .frame(width: 80)
+                                    Stepper("", value: $viewModel.startNumber, in: 1...999999) { _ in }
+                                }
                             }
-                            .disabled(!viewModel.sequentialMode)
+                            .padding(12)
+                            .background(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(Color.gray.opacity(0.1))
+                            )
                             .opacity(viewModel.sequentialMode ? 1.0 : 0.5)
+                            .disabled(!viewModel.sequentialMode)
                         }
-                        
-                        // Sequential Options (Number Padding)
-                        HStack {
-                            Text("Number Padding:")
-                            Stepper(value: $viewModel.numberPadding, in: 1...10) {
-                                Text("\(viewModel.numberPadding) digits")
-                            }
-                        }
-                        .disabled(!viewModel.sequentialMode)
-                        .opacity(viewModel.sequentialMode ? 1.0 : 0.5)
-                        
-                        // Sequential Options (Start Number)
-                        HStack {
-                            Text("Start Number:")
-                            TextField("", value: $viewModel.startNumber, formatter: NumberFormatter())
-                                .textFieldStyle(.roundedBorder)
-                                .frame(width: 80)
-                            Stepper("", value: $viewModel.startNumber, in: 1...999999) { _ in }
-                        }
-                        .disabled(!viewModel.sequentialMode)
-                        .opacity(viewModel.sequentialMode ? 1.0 : 0.5)
                         
                         // Non-Sequential Options
-                        VStack(alignment: .leading, spacing: 10) {
-                            // Pattern Type Picker
-                            HStack {
-                                Text("Rename Pattern:")
-                                Picker("Pattern", selection: $viewModel.nonSequentialPattern) {
-                                    ForEach(NonSequentialPattern.allCases, id: \.self) { pattern in
-                                        Text(pattern.displayName).tag(pattern)
-                                    }
-                                }
-                                .pickerStyle(.menu)
-                                .frame(width: 200)
-                            }
-                            .disabled(viewModel.sequentialMode)
-                            .opacity(viewModel.sequentialMode ? 0.5 : 1.0)
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Non-Sequential Options")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
                             
-                            // Random name length if random pattern selected
-                            if viewModel.nonSequentialPattern == .random {
+                            VStack(alignment: .leading, spacing: 10) {
+                                // Pattern Type Picker
                                 HStack {
-                                    Text("Random Name Length:")
-                                    Stepper(value: $viewModel.randomNameLength, in: 4...16) {
-                                        Text("\(viewModel.randomNameLength) characters")
+                                    Text("Rename Pattern:")
+                                    Picker("Pattern", selection: $viewModel.nonSequentialPattern) {
+                                        ForEach(NonSequentialPattern.allCases, id: \.self) { pattern in
+                                            Text(pattern.displayName).tag(pattern)
+                                        }
+                                    }
+                                    .pickerStyle(.menu)
+                                    .frame(width: 200)
+                                }
+                                
+                                // Random name length if random pattern selected
+                                if viewModel.nonSequentialPattern == .random {
+                                    HStack {
+                                        Text("Random Name Length:")
+                                        Stepper(value: $viewModel.randomNameLength, in: 4...16) {
+                                            Text("\(viewModel.randomNameLength) characters")
+                                        }
                                     }
                                 }
-                                .disabled(viewModel.sequentialMode)
-                                .opacity(viewModel.sequentialMode ? 0.5 : 1.0)
+                                
+                                if viewModel.nonSequentialPattern == .dateTime && !viewModel.sequentialMode {
+                                    Text("Date-based naming will use image EXIF date when available, falling back to file creation date.")
+                                        .font(.footnote)
+                                        .foregroundColor(.secondary)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                }
                             }
-                            
-                            if viewModel.nonSequentialPattern == .dateTime && !viewModel.sequentialMode {
-                                Text("Date-based naming will use image EXIF date when available, then file modification date, then current date.")
-                                    .font(.footnote)
-                                    .foregroundColor(.secondary)
-                                    .fixedSize(horizontal: false, vertical: true)
-                            }
+                            .padding(12)
+                            .background(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(Color.gray.opacity(0.1))
+                            )
+                            .opacity(viewModel.sequentialMode ? 0.5 : 1.0)
+                            .disabled(viewModel.sequentialMode)
                         }
                         
                         // Rename In Place Toggle
                         Toggle("Rename in place", isOn: $viewModel.renameInPlace)
+                            .padding(.top, 8)
                     }
                     .padding(10)
                     .background(
                         RoundedRectangle(cornerRadius: 10)
-                            .fill(Color.gray.opacity(0.1))
+                            .fill(Color.gray.opacity(0.05))
                     )
                 }
                 

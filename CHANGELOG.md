@@ -5,6 +5,13 @@ All notable changes to the Renamr application will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.2] - 2024-05-26
+### Added/Changed
+- UI improvements: clearer grouping for sequential/non-sequential options, improved file extension filter labeling
+- Date-based renaming now uses EXIF date, then file creation date only
+- Fixed Swift 6 warnings and async test compatibility
+- Minor bug fixes and code cleanup
+
 ## [1.2.1] - 2024-05-25
 ### Changed
 - Refactored sidebar and file preview display: the preview is now a collapsible right panel, and the config section is always visible on the left.

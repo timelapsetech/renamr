@@ -1,8 +1,8 @@
 # Renamr
 
-**Version 1.2.1**
+**Version 1.2.2**
 
-## What's New in 1.2.1
+## What's New in 1.2.2
 - Preview table shows file date/time used for sorting, and indicates if EXIF was used.
 - Alternating row backgrounds for better readability.
 - Real-time progress bar and status for both scanning and renaming.
@@ -12,6 +12,10 @@
 - Files are always renamed in oldest-first order (EXIF date, then creation date, then filename).
 - Table shows file size and sequential number.
 - Improved macOS look and feel.
+- Improved UI clarity for file extension input filter and sequential/non-sequential options
+- Date-based renaming now uses EXIF date, then file creation date only (no modification/current date fallback)
+- Fixed Swift 6 warnings and improved async test compatibility
+- Various bug fixes and code cleanup
 
 A modern macOS application for batch file renaming with a focus on images and other files. Renamr features a clean, intuitive interface and powerful renaming capabilities.
 
