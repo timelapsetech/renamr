@@ -3,7 +3,7 @@ import Foundation
 import ImageIO
 import UniformTypeIdentifiers
 
-enum NonSequentialPattern: String, CaseIterable {
+public enum NonSequentialPattern: String, CaseIterable {
     case dateTime
     case random
     
@@ -15,26 +15,26 @@ enum NonSequentialPattern: String, CaseIterable {
     }
 }
 
-class RenameViewModel: ObservableObject {
+public class RenameViewModel: ObservableObject {
     @Published var sourceURL: URL?
     @Published var outputURL: URL?
-    @Published var basename: String = ""
-    @Published var numberPadding: Int = 4
-    @Published var startNumber: Int = 1
-    @Published var renameInPlace: Bool = true
+    @Published public var basename: String = ""
+    @Published public var numberPadding: Int = 4
+    @Published public var startNumber: Int = 1
+    @Published public var renameInPlace: Bool = true
     @Published var isProcessing: Bool = false
     @Published var progress: Double = 0
     @Published var isSourceTargeted: Bool = false
     @Published var isOutputTargeted: Bool = false
-    @Published var extensionFilter: String = ""
+    @Published public var extensionFilter: String = ""
     @Published var shouldResetSourceURL: Bool = false
     
     // Rename mode
-    @Published var sequentialMode: Bool = true
+    @Published public var sequentialMode: Bool = true
     
     // Non-sequential options
-    @Published var nonSequentialPattern: NonSequentialPattern = .dateTime
-    @Published var randomNameLength: Int = 8
+    @Published public var nonSequentialPattern: NonSequentialPattern = .dateTime
+    @Published public var randomNameLength: Int = 8
     
     // Track which naming scheme is being used
     @Published var isUsingDatePattern: Bool = false
@@ -56,11 +56,11 @@ class RenameViewModel: ObservableObject {
     private var currentOperation: Task<Void, Never>?
     private var usedRandomNames = Set<String>()
     
-    @Published var previewFiles: [PreviewFile] = []
-    @Published var previewGenerated = false
+    @Published public var previewFiles: [PreviewFile] = []
+    @Published public var previewGenerated = false
     @Published var processingStage: String = ""
     
-    init() {
+    public init() {
         // Set Manual as the default option
         selectPreset("Manual")
     }
@@ -130,7 +130,7 @@ class RenameViewModel: ObservableObject {
         return true
     }
     
-    func generatePreview() {
+    public func generatePreview() {
         guard let sourceURL = sourceURL else { return }
         
         Task {
@@ -217,17 +217,22 @@ class RenameViewModel: ObservableObject {
                     guard let outputURL = outputURL else { continue }
                     destinationURL = outputURL.appendingPathComponent(previewFile.newName)
                 }
-                
+                print("Copying from:", previewFile.sourceURL.path)
+                print("To:", destinationURL.path)
+                print("Source exists:", fileManager.fileExists(atPath: previewFile.sourceURL.path))
+                if !renameInPlace, let outputURL = outputURL {
+                    print("Output dir exists:", fileManager.fileExists(atPath: outputURL.path))
+                }
                 do {
                     if renameInPlace {
                         try fileManager.moveItem(at: previewFile.sourceURL, to: destinationURL)
                     } else {
                         try fileManager.copyItem(at: previewFile.sourceURL, to: destinationURL)
                     }
+                    print("Copied file exists at output:", fileManager.fileExists(atPath: destinationURL.path))
                 } catch {
-                    print("Error renaming/copying file: \(error)")
+                    print("Error renaming/copying file:", error)
                 }
-                
                 await MainActor.run {
                     progress = Double(index + 1) / Double(filesToRenameCopy.count)
                     processingStage = "Renaming files..."
@@ -256,7 +261,7 @@ class RenameViewModel: ObservableObject {
     }
     
     // MARK: - Private Methods
-    private func generateNewName(for fileURL: URL, at index: Int) -> String {
+    public func generateNewName(for fileURL: URL, at index: Int) -> String {
         let fileExtension = fileURL.pathExtension
         if sequentialMode {
             let number = startNumber + index
@@ -282,12 +287,12 @@ class RenameViewModel: ObservableObject {
         }
     }
     
-    private func getFileDate(_ fileURL: URL) -> Date? {
+    public func getFileDate(_ fileURL: URL) -> Date? {
         let attributes = try? FileManager.default.attributesOfItem(atPath: fileURL.path)
         return attributes?[.modificationDate] as? Date
     }
     
-    private func shouldProcessFile(_ url: URL) -> Bool {
+    public func shouldProcessFile(_ url: URL) -> Bool {
         // Skip directories, only process files
         do {
             let resourceValues = try url.resourceValues(forKeys: [.isRegularFileKey, .isHiddenKey, .nameKey])
@@ -495,5 +500,15 @@ class RenameViewModel: ObservableObject {
         // Remove trailing numbers/underscores if present
         let base = folderName.replacingOccurrences(of: #"[_\d]+$"#, with: "", options: .regularExpression)
         self.basename = base
+    }
+    
+    public func performRename() async {
+        // Implementation of performRename method
+    }
+    
+    public func outputFileExists(named name: String) -> Bool {
+        guard let outputURL = outputURL else { return false }
+        let path = outputURL.appendingPathComponent(name).resolvingSymlinksInPath().path
+        return FileManager.default.fileExists(atPath: path)
     }
 } 

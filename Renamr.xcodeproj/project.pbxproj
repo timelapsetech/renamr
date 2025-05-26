@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -17,6 +17,16 @@
 		C2EE053D2DE3CA2000505B6E /* PreviewFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EE053B2DE3CA2000505B6E /* PreviewFile.swift */; };
 		C2EE053F2DE3CAA500505B6E /* PreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EE053E2DE3CAA500505B6E /* PreviewView.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		C2EE05482DE3FC8900505B6E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1A1A1A1A1A1A1A1A1A1A1A31 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1A1A1A1A1A1A1A1A1A1A1A2D;
+			remoteInfo = Renamr;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		1A1A1A1A1A1A1A1A1A1A1A1B /* RenamrApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenamrApp.swift; sourceTree = "<group>"; };
@@ -32,10 +42,22 @@
 		C28C9AA42DD81EBC003101EA /* RenamrRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RenamrRelease.entitlements; sourceTree = "<group>"; };
 		C2EE053B2DE3CA2000505B6E /* PreviewFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewFile.swift; sourceTree = "<group>"; };
 		C2EE053E2DE3CAA500505B6E /* PreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewView.swift; sourceTree = "<group>"; };
+		C2EE05442DE3FC8900505B6E /* RenamrTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RenamrTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		C2EE05452DE3FC8900505B6E /* RenamrTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = RenamrTests; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		1A1A1A1A1A1A1A1A1A1A1A27 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C2EE05412DE3FC8900505B6E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -49,6 +71,7 @@
 			isa = PBXGroup;
 			children = (
 				1A1A1A1A1A1A1A1A1A1A1A29 /* Renamr */,
+				C2EE05452DE3FC8900505B6E /* RenamrTests */,
 				1A1A1A1A1A1A1A1A1A1A1A2A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -73,6 +96,7 @@
 			isa = PBXGroup;
 			children = (
 				1A1A1A1A1A1A1A1A1A1A1A26 /* Renamr.app */,
+				C2EE05442DE3FC8900505B6E /* RenamrTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -140,6 +164,29 @@
 			productReference = 1A1A1A1A1A1A1A1A1A1A1A26 /* Renamr.app */;
 			productType = "com.apple.product-type.application";
 		};
+		C2EE05432DE3FC8900505B6E /* RenamrTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C2EE054C2DE3FC8900505B6E /* Build configuration list for PBXNativeTarget "RenamrTests" */;
+			buildPhases = (
+				C2EE05402DE3FC8900505B6E /* Sources */,
+				C2EE05412DE3FC8900505B6E /* Frameworks */,
+				C2EE05422DE3FC8900505B6E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C2EE05492DE3FC8900505B6E /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				C2EE05452DE3FC8900505B6E /* RenamrTests */,
+			);
+			name = RenamrTests;
+			packageProductDependencies = (
+			);
+			productName = RenamrTests;
+			productReference = C2EE05442DE3FC8900505B6E /* RenamrTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -147,11 +194,15 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1500;
+				LastSwiftUpdateCheck = 1630;
 				LastUpgradeCheck = 1630;
 				TargetAttributes = {
 					1A1A1A1A1A1A1A1A1A1A1A2D = {
 						CreatedOnToolsVersion = 15.0;
+					};
+					C2EE05432DE3FC8900505B6E = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = 1A1A1A1A1A1A1A1A1A1A1A2D;
 					};
 				};
 			};
@@ -169,6 +220,7 @@
 			projectRoot = "";
 			targets = (
 				1A1A1A1A1A1A1A1A1A1A1A2D /* Renamr */,
+				C2EE05432DE3FC8900505B6E /* RenamrTests */,
 			);
 		};
 /* End PBXProject section */
@@ -179,6 +231,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				1A1A1A1A1A1A1A1A1A1A1A40 /* Renamr.icns in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C2EE05422DE3FC8900505B6E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -200,7 +259,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C2EE05402DE3FC8900505B6E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		C2EE05492DE3FC8900505B6E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1A1A1A1A1A1A1A1A1A1A1A2D /* Renamr */;
+			targetProxy = C2EE05482DE3FC8900505B6E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		1A1A1A1A1A1A1A1A1A1A1A33 /* Debug */ = {
@@ -390,6 +464,42 @@
 			};
 			name = Release;
 		};
+		C2EE054A2DE3FC8900505B6E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2D8MBBQWXH;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.3;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.timelapsetech.RenamrTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Renamr.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Renamr";
+			};
+			name = Debug;
+		};
+		C2EE054B2DE3FC8900505B6E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2D8MBBQWXH;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.3;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.timelapsetech.RenamrTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Renamr.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Renamr";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -407,6 +517,15 @@
 			buildConfigurations = (
 				1A1A1A1A1A1A1A1A1A1A1A33 /* Debug */,
 				1A1A1A1A1A1A1A1A1A1A1A34 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C2EE054C2DE3FC8900505B6E /* Build configuration list for PBXNativeTarget "RenamrTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C2EE054A2DE3FC8900505B6E /* Debug */,
+				C2EE054B2DE3FC8900505B6E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
