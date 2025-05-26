@@ -1,8 +1,8 @@
 # Renamr
 
-**Version 1.2**
+**Version 1.2.1**
 
-## What's New in 1.2
+## What's New in 1.2.1
 - Preview table shows file date/time used for sorting, and indicates if EXIF was used.
 - Alternating row backgrounds for better readability.
 - Real-time progress bar and status for both scanning and renaming.
