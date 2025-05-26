@@ -55,6 +55,10 @@ A modern macOS application for batch file renaming with a focus on images and ot
 
 ## Version History
 
+### 1.1.1
+- Removed photos library access requirement
+- Improved security by removing unnecessary entitlements
+
 ### 1.1.0
 - Added automatic underscore insertion
 - Added automatic basename suggestion from folder name
