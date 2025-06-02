@@ -5,6 +5,16 @@ All notable changes to the Renamr application will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.3] - 2024-06-02
+### Added
+- Source directory is now automatically cleared after renaming completes
+
+### Changed
+- Optimized file scanning and renaming operations for better performance
+- Implemented batch processing to reduce UI updates
+- Improved progress reporting during file operations
+- Added memory optimizations for handling large directories
+
 ## [1.2.2] - 2024-05-26
 ### Added/Changed
 - UI improvements: clearer grouping for sequential/non-sequential options, improved file extension filter labeling

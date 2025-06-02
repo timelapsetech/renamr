@@ -23,7 +23,7 @@ final class RenameViewModelTests: XCTestCase {
     var viewModel: RenameViewModel!
 
     override func setUpWithError() throws {
-        let base = URL(fileURLWithPath: "/tmp/renamr-test", isDirectory: true)
+        let base = FileManager.default.temporaryDirectory.appendingPathComponent("renamr-test", isDirectory: true)
         tempDir = base.appendingPathComponent("source")
         outputDir = base.appendingPathComponent("output")
         try? FileManager.default.removeItem(at: tempDir)

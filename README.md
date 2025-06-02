@@ -1,6 +1,13 @@
 # Renamr
 
-**Version 1.2.2**
+**Version 1.2.3**
+
+## What's New in 1.2.3
+- Performance improvements for file scanning and renaming operations
+- Batch processing of files to reduce UI updates
+- Source directory is now cleared after renaming completes
+- Improved progress reporting during file operations
+- Memory optimizations for large directories
 
 ## What's New in 1.2.2
 - Preview table shows file date/time used for sorting, and indicates if EXIF was used.

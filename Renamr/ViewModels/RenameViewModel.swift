@@ -144,10 +144,25 @@ public class RenameViewModel: ObservableObject {
             let enumerator = fileManager.enumerator(at: sourceURL, includingPropertiesForKeys: [.isRegularFileKey, .isHiddenKey, .nameKey])
             var files: [URL] = []
             
+            // Batch process files to reduce main thread updates
+            var batchSize = 0
+            let maxBatchSize = 50
+            
             while let fileURL = enumerator?.nextObject() as? URL {
                 if !shouldProcessFile(fileURL) { continue }
                 files.append(fileURL)
+                batchSize += 1
+                
+                // Update progress in batches
+                if batchSize >= maxBatchSize {
+                    await MainActor.run {
+                        progress = Double(files.count) / 1000 // Estimate total files
+                        processingStage = "Scanning files..."
+                    }
+                    batchSize = 0
+                }
             }
+            
             // Sort files by EXIF date, then creation date, then filename
             let filesCopy = files.sorted { lhs, rhs in
                 let lhsDate = getBestDate(for: lhs)
@@ -162,14 +177,21 @@ public class RenameViewModel: ObservableObject {
                     return lhs.lastPathComponent < rhs.lastPathComponent
                 }
             }
+            
+            // Generate preview files in batches
             var previewFiles: [PreviewFile] = []
+            previewFiles.reserveCapacity(filesCopy.count)
+            
             for (index, fileURL) in filesCopy.enumerated() {
                 let newName = generateNewName(for: fileURL, at: index)
                 previewFiles.append(PreviewFile(sourceURL: fileURL, newName: newName))
                 
-                await MainActor.run {
-                    progress = Double(index + 1) / Double(filesCopy.count)
-                    processingStage = "Scanning files..."
+                // Update progress in batches
+                if index % maxBatchSize == 0 {
+                    await MainActor.run {
+                        progress = Double(index + 1) / Double(filesCopy.count)
+                        processingStage = "Generating preview..."
+                    }
                 }
             }
             
@@ -192,6 +214,7 @@ public class RenameViewModel: ObservableObject {
                 progress = 0
                 processingStage = "Renaming files..."
             }
+            
             // Only process files that pass shouldProcessFile
             let filesToRename = previewFilesCopy.filter { shouldProcessFile($0.sourceURL) }
             // Sort files by EXIF date, then creation date, then filename
@@ -208,7 +231,11 @@ public class RenameViewModel: ObservableObject {
                     return lhs.sourceURL.lastPathComponent < rhs.sourceURL.lastPathComponent
                 }
             }
+            
             let fileManager = FileManager.default
+            let maxBatchSize = 50
+            var processedCount = 0
+            
             for (index, previewFile) in filesToRenameCopy.enumerated() {
                 let destinationURL: URL
                 if renameInPlace {
@@ -217,25 +244,24 @@ public class RenameViewModel: ObservableObject {
                     guard let outputURL = outputURL else { continue }
                     destinationURL = outputURL.appendingPathComponent(previewFile.newName)
                 }
-                print("Copying from:", previewFile.sourceURL.path)
-                print("To:", destinationURL.path)
-                print("Source exists:", fileManager.fileExists(atPath: previewFile.sourceURL.path))
-                if !renameInPlace, let outputURL = outputURL {
-                    print("Output dir exists:", fileManager.fileExists(atPath: outputURL.path))
-                }
+                
                 do {
                     if renameInPlace {
                         try fileManager.moveItem(at: previewFile.sourceURL, to: destinationURL)
                     } else {
                         try fileManager.copyItem(at: previewFile.sourceURL, to: destinationURL)
                     }
-                    print("Copied file exists at output:", fileManager.fileExists(atPath: destinationURL.path))
+                    processedCount += 1
+                    
+                    // Update progress in batches
+                    if processedCount % maxBatchSize == 0 {
+                        await MainActor.run {
+                            progress = Double(processedCount) / Double(filesToRenameCopy.count)
+                            processingStage = "Renaming files..."
+                        }
+                    }
                 } catch {
                     print("Error renaming/copying file:", error)
-                }
-                await MainActor.run {
-                    progress = Double(index + 1) / Double(filesToRenameCopy.count)
-                    processingStage = "Renaming files..."
                 }
             }
             
@@ -244,6 +270,7 @@ public class RenameViewModel: ObservableObject {
                 previewFiles = []
                 previewGenerated = false
                 processingStage = ""
+                sourceURL = nil
             }
         }
     }
