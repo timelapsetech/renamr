@@ -38,6 +38,7 @@
 		1A1A1A1A1A1A1A1A1A1A1A39 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1A1A1A1A1A1A1A1A1A1A1A41 /* Renamr.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Renamr.icns; sourceTree = "<group>"; };
 		1A1A1A1A1A1A1A1A1A1A1A43 /* icon_generator.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = icon_generator.py; sourceTree = "<group>"; };
+		C259B1102DEE1DC200C29820 /* Renamr.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Renamr.entitlements; sourceTree = "<group>"; };
 		C28C9AA22DD8181C003101EA /* RenameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameViewModel.swift; sourceTree = "<group>"; };
 		C28C9AA42DD81EBC003101EA /* RenamrRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RenamrRelease.entitlements; sourceTree = "<group>"; };
 		C2EE053B2DE3CA2000505B6E /* PreviewFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewFile.swift; sourceTree = "<group>"; };
@@ -79,6 +80,7 @@
 		1A1A1A1A1A1A1A1A1A1A1A29 /* Renamr */ = {
 			isa = PBXGroup;
 			children = (
+				C259B1102DEE1DC200C29820 /* Renamr.entitlements */,
 				C2EE053C2DE3CA2000505B6E /* Models */,
 				C28C9AA42DD81EBC003101EA /* RenamrRelease.entitlements */,
 				1A1A1A1A1A1A1A1A1A1A1A1B /* RenamrApp.swift */,
@@ -406,6 +408,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CODE_SIGN_ENTITLEMENTS = Renamr/Renamr.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
