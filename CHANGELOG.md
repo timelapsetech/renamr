@@ -43,6 +43,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Refactored code for better SwiftUI and macOS compatibility.
+## [1.1.1] - 2024-05-16
+
+### Changed
+- Removed photos library access requirement
+- Improved security by removing unnecessary entitlements
+
 
 ## [1.1.0] - 2024-05-16
 
