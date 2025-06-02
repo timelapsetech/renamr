@@ -3,7 +3,7 @@ import Foundation
 import ImageIO
 import UniformTypeIdentifiers
 
-enum NonSequentialPattern: String, CaseIterable {
+public enum NonSequentialPattern: String, CaseIterable {
     case dateTime
     case random
     
@@ -15,26 +15,26 @@ enum NonSequentialPattern: String, CaseIterable {
     }
 }
 
-class RenameViewModel: ObservableObject {
+public class RenameViewModel: ObservableObject {
     @Published var sourceURL: URL?
     @Published var outputURL: URL?
-    @Published var basename: String = ""
-    @Published var numberPadding: Int = 4
-    @Published var startNumber: Int = 1
-    @Published var renameInPlace: Bool = true
+    @Published public var basename: String = ""
+    @Published public var numberPadding: Int = 4
+    @Published public var startNumber: Int = 1
+    @Published public var renameInPlace: Bool = true
     @Published var isProcessing: Bool = false
     @Published var progress: Double = 0
     @Published var isSourceTargeted: Bool = false
     @Published var isOutputTargeted: Bool = false
-    @Published var extensionFilter: String = ""
+    @Published public var extensionFilter: String = ""
     @Published var shouldResetSourceURL: Bool = false
     
     // Rename mode
-    @Published var sequentialMode: Bool = true
+    @Published public var sequentialMode: Bool = true
     
     // Non-sequential options
-    @Published var nonSequentialPattern: NonSequentialPattern = .dateTime
-    @Published var randomNameLength: Int = 8
+    @Published public var nonSequentialPattern: NonSequentialPattern = .dateTime
+    @Published public var randomNameLength: Int = 8
     
     // Track which naming scheme is being used
     @Published var isUsingDatePattern: Bool = false
@@ -56,13 +56,21 @@ class RenameViewModel: ObservableObject {
     private var currentOperation: Task<Void, Never>?
     private var usedRandomNames = Set<String>()
     
-    init() {
+    @Published public var previewFiles: [PreviewFile] = []
+    @Published public var previewGenerated = false
+    @Published var processingStage: String = ""
+    
+    public init() {
         // Set Manual as the default option
         selectPreset("Manual")
     }
     
     var canStartRenaming: Bool {
-        sourceURL != nil && (sequentialMode ? !basename.isEmpty : true) && (renameInPlace || outputURL != nil)
+        guard let sourceURL = sourceURL else { return false }
+        if renameInPlace {
+            return true
+        }
+        return outputURL != nil
     }
     
     func selectPreset(_ key: String) {
@@ -92,135 +100,177 @@ class RenameViewModel: ObservableObject {
     func handleSourceDrop(_ providers: [NSItemProvider]) -> Bool {
         guard let provider = providers.first else { return false }
         
-        if provider.hasItemConformingToTypeIdentifier("public.file-url") {
-            provider.loadItem(forTypeIdentifier: "public.file-url", options: nil) { (urlData, error) in
-                DispatchQueue.main.async {
-                    if let urlData = urlData as? Data,
-                       let url = NSURL(dataRepresentation: urlData, relativeTo: nil) as URL? {
-                        self.sourceURL = url
-                        // Set default basename from folder name
-                        self.setDefaultBasename(from: url)
-                    }
-                }
+        provider.loadItem(forTypeIdentifier: "public.file-url", options: nil) { (data, error) in
+            guard let data = data as? Data,
+                  let path = String(data: data, encoding: .utf8),
+                  let url = URL(string: path) else { return }
+            
+            DispatchQueue.main.async {
+                self.sourceURL = url
+                self.suggestBasenameFromSourceURL()
+                self.previewFiles = []
+                self.previewGenerated = false
             }
-            return true
         }
-        return false
-    }
-    
-    private func setDefaultBasename(from url: URL) {
-        let folderName = url.lastPathComponent
-        if let underscoreIndex = folderName.firstIndex(of: "_") {
-            // If underscore found, use everything before it
-            basename = String(folderName[..<underscoreIndex])
-        } else {
-            // If no underscore, use the whole folder name
-            basename = folderName
-        }
+        return true
     }
     
     func handleOutputDrop(_ providers: [NSItemProvider]) -> Bool {
         guard let provider = providers.first else { return false }
         
-        if provider.hasItemConformingToTypeIdentifier("public.file-url") {
-            provider.loadItem(forTypeIdentifier: "public.file-url", options: nil) { (urlData, error) in
-                DispatchQueue.main.async {
-                    if let urlData = urlData as? Data,
-                       let url = NSURL(dataRepresentation: urlData, relativeTo: nil) as URL? {
-                        self.outputURL = url
+        provider.loadItem(forTypeIdentifier: "public.file-url", options: nil) { (data, error) in
+            guard let data = data as? Data,
+                  let path = String(data: data, encoding: .utf8),
+                  let url = URL(string: path) else { return }
+            
+            DispatchQueue.main.async {
+                self.outputURL = url
+            }
+        }
+        return true
+    }
+    
+    public func generatePreview() {
+        guard let sourceURL = sourceURL else { return }
+        
+        Task {
+            await MainActor.run {
+                isProcessing = true
+                progress = 0
+                processingStage = "Scanning files..."
+            }
+            
+            let fileManager = FileManager.default
+            let enumerator = fileManager.enumerator(at: sourceURL, includingPropertiesForKeys: [.isRegularFileKey, .isHiddenKey, .nameKey])
+            var files: [URL] = []
+            
+            // Batch process files to reduce main thread updates
+            var batchSize = 0
+            let maxBatchSize = 50
+            
+            while let fileURL = enumerator?.nextObject() as? URL {
+                if !shouldProcessFile(fileURL) { continue }
+                files.append(fileURL)
+                batchSize += 1
+                
+                // Update progress in batches
+                if batchSize >= maxBatchSize {
+                    await MainActor.run {
+                        progress = Double(files.count) / 1000 // Estimate total files
+                        processingStage = "Scanning files..."
+                    }
+                    batchSize = 0
+                }
+            }
+            
+            // Sort files by EXIF date, then creation date, then filename
+            let filesCopy = files.sorted { lhs, rhs in
+                let lhsDate = getBestDate(for: lhs)
+                let rhsDate = getBestDate(for: rhs)
+                if let lhsDate = lhsDate, let rhsDate = rhsDate {
+                    return lhsDate < rhsDate
+                } else if lhsDate != nil {
+                    return true
+                } else if rhsDate != nil {
+                    return false
+                } else {
+                    return lhs.lastPathComponent < rhs.lastPathComponent
+                }
+            }
+            
+            // Generate preview files in batches
+            var previewFiles: [PreviewFile] = []
+            previewFiles.reserveCapacity(filesCopy.count)
+            
+            for (index, fileURL) in filesCopy.enumerated() {
+                let newName = generateNewName(for: fileURL, at: index)
+                previewFiles.append(PreviewFile(sourceURL: fileURL, newName: newName))
+                
+                // Update progress in batches
+                if index % maxBatchSize == 0 {
+                    await MainActor.run {
+                        progress = Double(index + 1) / Double(filesCopy.count)
+                        processingStage = "Generating preview..."
                     }
                 }
             }
-            return true
+            
+            await MainActor.run {
+                self.previewFiles = previewFiles
+                self.previewGenerated = true
+                self.isProcessing = false
+                self.processingStage = ""
+            }
         }
-        return false
     }
     
     func startRenaming() {
-        guard let sourceURL = sourceURL else { return }
+        guard !previewFiles.isEmpty else { return }
         
-        isProcessing = true
-        progress = 0
-        usedRandomNames.removeAll()
-        
-        currentOperation = Task {
-            do {
-                let fileManager = FileManager.default
-                let enumerator1 = fileManager.enumerator(at: sourceURL,
-                                                      includingPropertiesForKeys: [.isRegularFileKey, .contentModificationDateKey],
-                                                      options: [.skipsHiddenFiles])
-                
-                var currentNumber = startNumber
-                var totalFiles = 0
-                var processedFiles = 0
-                
-                // New code: collect all eligible files with their dates for sorting
-                var filesToProcess: [(url: URL, date: Date)] = []
-                
-                // First collect all files to process
-                while let fileURL = enumerator1?.nextObject() as? URL {
-                    if shouldProcessFile(fileURL) {
-                        // Get file date (EXIF date or modification date)
-                        let fileDate = getEffectiveDate(from: fileURL)
-                        filesToProcess.append((fileURL, fileDate))
-                        totalFiles += 1
-                    }
+        let previewFilesCopy = self.previewFiles
+        currentOperation = Task { [previewFilesCopy] in
+            await MainActor.run {
+                isProcessing = true
+                progress = 0
+                processingStage = "Renaming files..."
+            }
+            
+            // Only process files that pass shouldProcessFile
+            let filesToRename = previewFilesCopy.filter { shouldProcessFile($0.sourceURL) }
+            // Sort files by EXIF date, then creation date, then filename
+            let filesToRenameCopy = filesToRename.sorted { lhs, rhs in
+                let lhsDate = getBestDate(for: lhs.sourceURL)
+                let rhsDate = getBestDate(for: rhs.sourceURL)
+                if let lhsDate = lhsDate, let rhsDate = rhsDate {
+                    return lhsDate < rhsDate
+                } else if lhsDate != nil {
+                    return true
+                } else if rhsDate != nil {
+                    return false
+                } else {
+                    return lhs.sourceURL.lastPathComponent < rhs.sourceURL.lastPathComponent
+                }
+            }
+            
+            let fileManager = FileManager.default
+            let maxBatchSize = 50
+            var processedCount = 0
+            
+            for (index, previewFile) in filesToRenameCopy.enumerated() {
+                let destinationURL: URL
+                if renameInPlace {
+                    destinationURL = previewFile.sourceURL.deletingLastPathComponent().appendingPathComponent(previewFile.newName)
+                } else {
+                    guard let outputURL = outputURL else { continue }
+                    destinationURL = outputURL.appendingPathComponent(previewFile.newName)
                 }
                 
-                if totalFiles == 0 {
-                    await MainActor.run {
-                        isProcessing = false
-                        progress = 0
-                        shouldResetSourceURL = true
-                    }
-                    return
-                }
-                
-                // Sort files by date (oldest first) when in sequential mode
-                if sequentialMode {
-                    filesToProcess.sort { $0.date < $1.date }
-                }
-                
-                // Process files in the sorted order
-                for (index, fileInfo) in filesToProcess.enumerated() {
-                    if Task.isCancelled { break }
-                    
-                    let fileURL = fileInfo.url
-                    let newName: String
-                    
-                    if sequentialMode {
-                        newName = generateNewSequentialName(currentNumber: currentNumber, fileURL: fileURL)
-                    } else {
-                        newName = generateNewNonSequentialName(fileURL: fileURL)
-                    }
-                    
+                do {
                     if renameInPlace {
-                        try fileManager.moveItem(at: fileURL,
-                                               to: fileURL.deletingLastPathComponent().appendingPathComponent(newName))
-                    } else if let outputURL = outputURL {
-                        let relativePath = fileURL.path.replacingOccurrences(of: sourceURL.path, with: "")
-                        let destinationURL = outputURL.appendingPathComponent(relativePath)
-                        try fileManager.createDirectory(at: destinationURL.deletingLastPathComponent(),
-                                                      withIntermediateDirectories: true)
-                        try fileManager.copyItem(at: fileURL, to: destinationURL.deletingLastPathComponent().appendingPathComponent(newName))
+                        try fileManager.moveItem(at: previewFile.sourceURL, to: destinationURL)
+                    } else {
+                        try fileManager.copyItem(at: previewFile.sourceURL, to: destinationURL)
                     }
+                    processedCount += 1
                     
-                    currentNumber += 1
-                    processedFiles += 1
-                    
-                    let progressValue = min(Double(processedFiles) / Double(totalFiles), 1.0)
-                    await MainActor.run {
-                        progress = progressValue
+                    // Update progress in batches
+                    if processedCount % maxBatchSize == 0 {
+                        await MainActor.run {
+                            progress = Double(processedCount) / Double(filesToRenameCopy.count)
+                            processingStage = "Renaming files..."
+                        }
                     }
+                } catch {
+                    print("Error renaming/copying file:", error)
                 }
-            } catch {
-                print("Error during renaming: \(error)")
             }
             
             await MainActor.run {
                 isProcessing = false
-                progress = 0
-                shouldResetSourceURL = true
+                previewFiles = []
+                previewGenerated = false
+                processingStage = ""
+                sourceURL = nil
             }
         }
     }
@@ -228,25 +278,64 @@ class RenameViewModel: ObservableObject {
     func cancelRenaming() {
         currentOperation?.cancel()
         isProcessing = false
-        progress = 0
     }
     
-    private func shouldProcessFile(_ url: URL) -> Bool {
+    func resetSourceURLIfNeeded() {
+        if shouldResetSourceURL {
+            sourceURL = nil
+            shouldResetSourceURL = false
+        }
+    }
+    
+    // MARK: - Private Methods
+    public func generateNewName(for fileURL: URL, at index: Int) -> String {
+        let fileExtension = fileURL.pathExtension
+        if sequentialMode {
+            let number = startNumber + index
+            let paddedNumber = String(format: "%0\(numberPadding)d", number)
+            // Always insert underscore if not present
+            let base = basename.hasSuffix("_") ? basename : basename + "_"
+            return "\(base)\(paddedNumber).\(fileExtension)"
+        } else {
+            switch nonSequentialPattern {
+            case .dateTime:
+                if let date = getFileDate(fileURL) {
+                    let formatter = DateFormatter()
+                    formatter.dateFormat = "yyyyMMdd_HHmmss"
+                    return "\(formatter.string(from: date)).\(fileExtension)"
+                }
+                return "\(Date().timeIntervalSince1970).\(fileExtension)"
+            case .random:
+                let randomString = String((0..<randomNameLength).map { _ in
+                    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".randomElement()!
+                })
+                return "\(randomString).\(fileExtension)"
+            }
+        }
+    }
+    
+    public func getFileDate(_ fileURL: URL) -> Date? {
+        let attributes = try? FileManager.default.attributesOfItem(atPath: fileURL.path)
+        return attributes?[.modificationDate] as? Date
+    }
+    
+    public func shouldProcessFile(_ url: URL) -> Bool {
         // Skip directories, only process files
         do {
-            let resourceValues = try url.resourceValues(forKeys: [.isRegularFileKey])
+            let resourceValues = try url.resourceValues(forKeys: [.isRegularFileKey, .isHiddenKey, .nameKey])
             guard let isRegularFile = resourceValues.isRegularFile, isRegularFile else {
                 return false
             }
+            // Skip dot files and hidden files
+            if let name = resourceValues.name, name.hasPrefix(".") { return false }
+            if resourceValues.isHidden == true { return false }
         } catch {
             return false
         }
-        
         // If no extension filter is specified, include all files
         if extensionFilter.isEmpty {
             return true
         }
-        
         // Otherwise, match the extension
         let fileExtension = url.pathExtension.lowercased()
         return fileExtension.lowercased() == extensionFilter.lowercased()
@@ -306,11 +395,11 @@ class RenameViewModel: ObservableObject {
         if let exifDate = getExifDate(from: fileURL) {
             date = exifDate
         }
-        // Try file modification date next
-        else if let modDate = getFileModificationDate(from: fileURL) {
-            date = modDate
+        // Try file creation date next
+        else if let creationDate = getFileCreationDate(fileURL) {
+            date = creationDate
         }
-        // Fall back to current date/time
+        // If no date is available, use a timestamp to ensure uniqueness
         else {
             date = Date()
         }
@@ -325,38 +414,42 @@ class RenameViewModel: ObservableObject {
         return "\(baseString)-\(String(format: "%03d", milliseconds))"
     }
     
-    private func getFileModificationDate(from fileURL: URL) -> Date? {
+    public func getFileCreationDate(_ fileURL: URL) -> Date? {
         do {
-            let resourceValues = try fileURL.resourceValues(forKeys: [.contentModificationDateKey])
-            return resourceValues.contentModificationDate
+            let resourceValues = try fileURL.resourceValues(forKeys: [.creationDateKey])
+            return resourceValues.creationDate
         } catch {
-            print("Error reading file modification date: \(error)")
             return nil
         }
     }
     
-    private func getDatePrefix(from fileURL: URL) -> String {
-        // Try to get date from EXIF data first (for images)
-        if let exifDate = getExifDate(from: fileURL) {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyyMMdd"
-            return formatter.string(from: exifDate)
-        }
-        
-        // Try to get file modification date as fallback
-        if let modificationDate = getFileModificationDate(from: fileURL) {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyyMMdd"
-            return formatter.string(from: modificationDate)
-        }
-        
-        // Use current date as final fallback
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyyMMdd"
-        return formatter.string(from: Date())
+    // Also handle picker-based folder selection
+    func setSourceURLFromPicker(_ url: URL) {
+        self.sourceURL = url
+        self.suggestBasenameFromSourceURL()
+        self.previewFiles = []
+        self.previewGenerated = false
     }
     
-    private func getExifDate(from fileURL: URL) -> Date? {
+    private func suggestBasenameFromSourceURL() {
+        guard let url = sourceURL else { return }
+        let folderName = url.lastPathComponent
+        // Remove trailing numbers/underscores if present
+        let base = folderName.replacingOccurrences(of: #"[_\d]+$"#, with: "", options: .regularExpression)
+        self.basename = base
+    }
+    
+    public func performRename() async {
+        // Implementation of performRename method
+    }
+    
+    public func outputFileExists(named name: String) -> Bool {
+        guard let outputURL = outputURL else { return false }
+        let path = outputURL.appendingPathComponent(name).resolvingSymlinksInPath().path
+        return FileManager.default.fileExists(atPath: path)
+    }
+    
+    func getExifDate(from fileURL: URL) -> Date? {
         // Check if the file is an image type
         let fileExtension = fileURL.pathExtension.lowercased()
         let imageExtensions = ["jpg", "jpeg", "tiff", "heic", "png", "raw", "cr2", "crw", "nef", "arw"]
@@ -404,26 +497,14 @@ class RenameViewModel: ObservableObject {
         return formatter.date(from: dateString)
     }
     
-    func resetSourceURLIfNeeded() {
-        if shouldResetSourceURL {
-            sourceURL = nil
-            shouldResetSourceURL = false
+    // Helper to get best date for sorting
+    private func getBestDate(for fileURL: URL) -> Date? {
+        if let exif = getExifDate(from: fileURL) {
+            return exif
         }
-    }
-    
-    // Add a helper method to get the effective date for a file
-    private func getEffectiveDate(from fileURL: URL) -> Date {
-        // Try to get date from EXIF data first (for images)
-        if let exifDate = getExifDate(from: fileURL) {
-            return exifDate
+        if let creation = getFileCreationDate(fileURL) {
+            return creation
         }
-        
-        // Try to get file modification date as fallback
-        if let modificationDate = getFileModificationDate(from: fileURL) {
-            return modificationDate
-        }
-        
-        // Use current date as final fallback
-        return Date()
+        return nil
     }
 } 

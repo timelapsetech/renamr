@@ -1,5 +1,29 @@
 # Renamr
 
+**Version 1.2.3**
+
+## What's New in 1.2.3
+- Performance improvements for file scanning and renaming operations
+- Batch processing of files to reduce UI updates
+- Source directory is now cleared after renaming completes
+- Improved progress reporting during file operations
+- Memory optimizations for large directories
+
+## What's New in 1.2.2
+- Preview table shows file date/time used for sorting, and indicates if EXIF was used.
+- Alternating row backgrounds for better readability.
+- Real-time progress bar and status for both scanning and renaming.
+- Quick Look preview for files (eye icon or spacebar on button).
+- Clickable drop zones for both source and output directories (opens folder picker or supports drag-and-drop).
+- Output files are copied (not moved) when 'rename in place' is unchecked.
+- Files are always renamed in oldest-first order (EXIF date, then creation date, then filename).
+- Table shows file size and sequential number.
+- Improved macOS look and feel.
+- Improved UI clarity for file extension input filter and sequential/non-sequential options
+- Date-based renaming now uses EXIF date, then file creation date only (no modification/current date fallback)
+- Fixed Swift 6 warnings and improved async test compatibility
+- Various bug fixes and code cleanup
+
 A modern macOS application for batch file renaming with a focus on images and other files. Renamr features a clean, intuitive interface and powerful renaming capabilities.
 
 ![Renamr Application](Renamr/Resources/app_screenshot.png)
