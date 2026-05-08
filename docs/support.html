@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Renamr Support - Help & Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        }
+
+        .app-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            font-size: 20px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .quick-links {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .quick-link {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            font-size: 14px;
+        }
+
+        .quick-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        .support-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-icon {
+            font-size: 36px;
+        }
+
+        .faq-item {
+            margin-bottom: 25px;
+            border: 1px solid #e1e8ed;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: box-shadow 0.2s ease;
+        }
+
+        .faq-item:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .faq-question {
+            background: #f8f9fa;
+            padding: 20px;
+            font-weight: 600;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s ease;
+        }
+
+        .faq-question:hover {
+            background: #e9ecef;
+        }
+
+        .faq-answer {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e1e8ed;
+        }
+
+        .faq-answer p {
+            margin-bottom: 15px;
+        }
+
+        .faq-answer ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .faq-answer li {
+            margin-bottom: 8px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid #dee2e6;
+        }
+
+        .feature-card h4 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #495057;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .code-example {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 14px;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+
+        .github-section {
+            background: linear-gradient(135deg, #24292e 0%, #586069 100%);
+            color: white;
+        }
+
+        .github-section .section-title {
+            color: white;
+        }
+
+        .github-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .github-card h4 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .github-card a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 10px;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            transition: background 0.2s ease;
+        }
+
+        .github-card a:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .warning-box strong {
+            color: #856404;
+        }
+
+        .success-box {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .success-box strong {
+            color: #155724;
+        }
+
+        .info-box {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .info-box strong {
+            color: #0c5460;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header {
+                padding: 25px 20px;
+            }
+            
+            .header h1 {
+                font-size: 36px;
+            }
+            
+            .header p {
+                font-size: 18px;
+            }
+            
+            .support-section {
+                padding: 25px 20px;
+            }
+            
+            .section-title {
+                font-size: 24px;
+            }
+            
+            .quick-links {
+                gap: 10px;
+            }
+            
+            .quick-link {
+                padding: 10px 18px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="app-icon">R</div>
+            <h1>Renamr Support</h1>
+            <p>Get help with file renaming, time lapse sequences, and more</p>
+            <div class="quick-links">
+                <a href="#getting-started" class="quick-link">Getting Started</a>
+                <a href="#faq" class="quick-link">FAQ</a>
+                <a href="#troubleshooting" class="quick-link">Troubleshooting</a>
+                <a href="#github" class="quick-link">Report Issues</a>
+            </div>
+        </div>
+
+        <div class="content-grid">
+            <div class="support-section" id="getting-started">
+                <h2 class="section-title">
+                    <span class="section-icon">🚀</span>
+                    Getting Started
+                </h2>
+                <p>Renamr makes it easy to rename multiple files at once. Here's how to get started:</p>
+                
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>📁 Step 1: Select Files</h4>
+                        <p>Drag and drop a folder containing the files you want to rename into the Source Directory area, or click to browse and select a folder.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>⚙️ Step 2: Choose Options</h4>
+                        <p>Set your file extension filter, choose sequential renaming, and configure your base name and numbering options.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>▶️ Step 3: Start Renaming</h4>
+                        <p>Click "Start Renaming" to batch rename all your files according to your settings. It's that simple!</p>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <strong>Rename in Place vs. Copy to New Location:</strong> By default, "Rename in place" is checked, which modifies your original files. Uncheck this option to create renamed copies in a new location while leaving your originals untouched - perfect for testing or when you want to keep backups.
+                </div>
+
+                <div class="success-box">
+                    <strong>Pro Tip:</strong> For time lapse photography, use sequential renaming with 4-digit padding (Frame_0001, Frame_0002, etc.) to ensure proper frame ordering in video editing software.
+                </div>
+            </div>
+
+            <div class="support-section" id="faq">
+                <h2 class="section-title">
+                    <span class="section-icon">❓</span>
+                    Frequently Asked Questions
+                </h2>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        What file types does Renamr support?
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Renamr supports all file types including:</p>
+                        <ul>
+                            <li><strong>Images:</strong> JPG, PNG, RAW, TIFF, GIF, BMP, HEIC</li>
+                            <li><strong>Videos:</strong> MP4, MOV, AVI, MKV, FLV</li>
+                            <li><strong>Documents:</strong> PDF, DOC, TXT, RTF</li>
+                            <li><strong>Other:</strong> Any file type - just specify the extension or leave blank for all files</li>
+                        </ul>
+                        <p>You can filter by specific extensions or rename all files regardless of type.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        How do I rename files for time lapse photography?
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>For time lapse sequences, follow these steps:</p>
+                        <ul>
+                            <li>Enable "Rename Files Sequentially"</li>
+                            <li>Set a descriptive base name like "Frame" or "Timelapse"</li>
+                            <li>Use 4-digit number padding for proper sorting</li>
+                            <li>Start from 1 (or your preferred starting number)</li>
+                            <li>Ensure all your image files have the same extension</li>
+                        </ul>
+                        <div class="code-example">
+Example result:
+Frame_0001.jpg
+Frame_0002.jpg
+Frame_0003.jpg
+...
+Frame_9999.jpg</div>
+                        <p>This ensures your frames import correctly into video editing software like Final Cut Pro, Premiere, or DaVinci Resolve.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        What's the difference between the rename patterns?
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Renamr offers three powerful renaming patterns:</p>
+                        <ul>
+                            <li><strong>Sequential (Pattern):</strong> Uses your base name + underscore + sequential numbers (Photo_001, Photo_002, etc.)</li>
+                            <li><strong>Date & Time:</strong> Names files based on creation/modification date and time</li>
+                            <li><strong>Random:</strong> Generates unique random names for anonymization</li>
+                        </ul>
+                        <p>Sequential is perfect for photo series and time lapse. Date & Time is great for organizing by when files were created.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        What does "Rename in place" mean?
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>The "Rename in place" option controls where your renamed files go:</p>
+                        <ul>
+                            <li><strong>Checked (default):</strong> Files are renamed directly in their original location - your original files are modified</li>
+                            <li><strong>Unchecked:</strong> Renamed copies are created in a new location while your original files remain untouched</li>
+                        </ul>
+                        <div class="info-box">
+                            <strong>Recommendation:</strong> Uncheck "Rename in place" when testing rename patterns or when you want to keep your original files as backups.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        How do I handle different file extensions in one folder?
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>You have several options:</p>
+                        <ul>
+                            <li><strong>All files:</strong> Leave the File Extension field empty to rename all files</li>
+                            <li><strong>Specific type:</strong> Enter an extension like ".jpg" to rename only JPG files</li>
+                            <li><strong>Multiple runs:</strong> Run Renamr multiple times with different extensions</li>
+                        </ul>
+                        <p>The app preserves original file extensions, so a .jpg file will remain .jpg after renaming.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        What does "Number Padding" mean?
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Number padding adds leading zeros to keep consistent file name lengths:</p>
+                        <ul>
+                            <li><strong>1 digit:</strong> Photo_1, Photo_2, Photo_3, ..., Photo_9, Photo_10, Photo_11</li>
+                            <li><strong>2 digits:</strong> Photo_01, Photo_02, Photo_03, ..., Photo_99, Photo_100</li>
+                            <li><strong>3 digits:</strong> Photo_001, Photo_002, Photo_003, ..., Photo_999, Photo_1000</li>
+                            <li><strong>4 digits:</strong> Photo_0001, Photo_0002, Photo_0003, ..., Photo_9999, Photo_10000</li>
+                        </ul>
+                        <p>For time lapse and large photo collections, 4-digit padding is recommended for proper sorting.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="support-section" id="troubleshooting">
+                <h2 class="section-title">
+                    <span class="section-icon">🔧</span>
+                    Troubleshooting
+                </h2>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        The app says "No files found" when I drag a folder
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>This usually happens when:</p>
+                        <ul>
+                            <li>The folder is empty</li>
+                            <li>No files match your file extension filter</li>
+                            <li>Files are in subfolders (Renamr only processes the main folder)</li>
+                        </ul>
+                        <p><strong>Solutions:</strong></p>
+                        <ul>
+                            <li>Check that the folder contains files</li>
+                            <li>Try leaving the File Extension field empty</li>
+                            <li>Move files from subfolders to the main folder</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Renaming is very slow or the app becomes unresponsive
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>For very large batches (1000+ files), the process may take time:</p>
+                        <ul>
+                            <li>Close other applications to free up memory</li>
+                            <li>Consider breaking large batches into smaller groups</li>
+                            <li>Ensure your Mac has sufficient free disk space</li>
+                            <li>Try restarting Renamr if it becomes unresponsive</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Files are not sorting correctly after renaming
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>This is usually a number padding issue:</p>
+                        <ul>
+                            <li>Without padding: File_1, File_10, File_2 (incorrect order)</li>
+                            <li>With padding: File_01, File_02, File_10 (correct order)</li>
+                        </ul>
+                        <p>Use appropriate number padding based on your total file count:</p>
+                        <ul>
+                            <li>Up to 99 files: 2-digit padding</li>
+                            <li>Up to 999 files: 3-digit padding</li>
+                            <li>Up to 9999 files: 4-digit padding</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Getting permission errors when trying to rename
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Permission errors can occur if:</p>
+                        <ul>
+                            <li>Files are currently open in another application</li>
+                            <li>The folder is write-protected</li>
+                            <li>Files are on a network drive with restrictions</li>
+                        </ul>
+                        <p><strong>Solutions:</strong></p>
+                        <ul>
+                            <li>Close any applications that might be using the files</li>
+                            <li>Check folder permissions in Finder</li>
+                            <li>Copy files to your local drive before renaming</li>
+                            <li>Run Renamr with administrator privileges if needed</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="support-section github-section" id="github">
+                <h2 class="section-title">
+                    <span class="section-icon">🐛</span>
+                    Bug Reports & Feature Requests
+                </h2>
+                <p>Found a bug or have an idea for a new feature? Help us improve Renamr by reporting issues on our GitHub repository.</p>
+                
+                <div class="github-card">
+                    <h4>🐛 Report Issues on GitHub</h4>
+                    <p>Submit bug reports, feature requests, or ask questions about Renamr. Please include details about your macOS version, Renamr version, and steps to reproduce any issues.</p>
+                    <a href="https://github.com/timelapsetech/renamr/issues" target="_blank">Open GitHub Issues</a>
+                </div>
+
+                <div class="warning-box" style="background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.2); margin-top: 30px;">
+                    <strong style="color: white;">When reporting issues, please include:</strong>
+                    <ul style="color: rgba(255, 255, 255, 0.9); margin-top: 10px;">
+                        <li>Your macOS version</li>
+                        <li>Renamr version number</li>
+                        <li>Description of the issue or feature request</li>
+                        <li>Steps to reproduce the problem (for bugs)</li>
+                        <li>Screenshots if helpful</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple FAQ toggle functionality
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const answer = question.nextElementSibling;
+                const isOpen = answer.style.display === 'block';
+                
+                // Close all other answers
+                document.querySelectorAll('.faq-answer').forEach(ans => {
+                    ans.style.display = 'none';
+                });
+                document.querySelectorAll('.faq-question span').forEach(span => {
+                    span.textContent = '+';
+                });
+                
+                // Toggle current answer
+                if (!isOpen) {
+                    answer.style.display = 'block';
+                    question.querySelector('span').textContent = '−';
+                } else {
+                    answer.style.display = 'none';
+                    question.querySelector('span').textContent = '+';
+                }
+            });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Initialize FAQ items as closed
+        document.querySelectorAll('.faq-answer').forEach(answer => {
+            answer.style.display = 'none';
+        });
+    </script>
+</body>
+</html>

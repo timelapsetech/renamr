@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Renamr: the easy, fast and FREE renaming app for MacOS!</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+        }
+
+        .marketing-container {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Hero Marketing Image */
+        .hero-image {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            border-radius: 20px;
+            padding: 60px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .hero-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #fff, #e0e6ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 24px;
+            margin-bottom: 40px;
+            color: rgba(255,255,255,0.9);
+            font-weight: 300;
+        }
+
+        .app-mockup {
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 0;
+            margin: 40px auto 0;
+            max-width: 600px;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.4);
+            border: 1px solid #333;
+        }
+
+        .mockup-titlebar {
+            background: #2d2d2d;
+            padding: 12px 16px;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .traffic-light {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .red { background: #ff5f57; }
+        .yellow { background: #ffbd2e; }
+        .green { background: #28ca42; }
+
+        .window-title {
+            flex: 1;
+            text-align: center;
+            color: #ccc;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .app-content {
+            padding: 30px;
+            background: #1a1a1a;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .app-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .app-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .app-description {
+            color: #999;
+            font-size: 16px;
+        }
+
+        .drop-zone {
+            border: 2px dashed #555;
+            border-radius: 12px;
+            padding: 60px 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            background: rgba(255,255,255,0.02);
+        }
+
+        .drop-zone-title {
+            color: white;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .drop-zone-subtitle {
+            color: #999;
+            font-size: 14px;
+        }
+
+        .form-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 15px;
+        }
+
+        .form-label {
+            color: white;
+            font-size: 14px;
+            min-width: 120px;
+        }
+
+        .form-input {
+            background: #2d4a87;
+            border: 1px solid #4a6cb7;
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: white;
+            font-size: 14px;
+            flex: 1;
+        }
+
+        .form-input::placeholder {
+            color: #8aa3d4;
+        }
+
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 25px 0;
+        }
+
+        .checkbox {
+            width: 18px;
+            height: 18px;
+            background: #007AFF;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        .checkbox-label {
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border-radius: 8px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #007AFF;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #4a4a4a;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a5a5a;
+        }
+
+        /* Feature Showcase */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .feature-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .feature-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .feature-description {
+            color: rgba(255,255,255,0.8);
+            line-height: 1.6;
+        }
+
+        /* App Store Style Promotional Banner */
+        .promo-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 50px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .promo-badge {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 8px 20px;
+            display: inline-block;
+            margin-bottom: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .promo-title {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+
+        .promo-subtitle {
+            font-size: 20px;
+            opacity: 0.9;
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+
+        .download-btn {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            display: block;
+            margin: 0 auto 30px auto;
+            width: fit-content;
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background: rgba(255,255,255,0.25);
+            border-color: rgba(255,255,255,0.5);
+            transform: translateY(-2px);
+        }
+
+        .app-store-badge {
+            display: block;
+            text-align: center;
+            margin-top: 0;
+            transition: transform 0.3s ease;
+        }
+
+        .app-store-badge:hover {
+            transform: scale(1.05);
+        }
+
+        .app-store-badge img {
+            height: 40px;
+            width: auto;
+        }
+
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+
+        .floating-element {
+            position: absolute;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-element:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-element:nth-child(2) {
+            width: 60px;
+            height: 60px;
+            top: 20%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+
+        .floating-element:nth-child(3) {
+            width: 40px;
+            height: 40px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .section-title {
+            text-align: center;
+            color: white;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 40px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        /* Navigation Footer */
+        .nav-footer {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+        }
+
+        .footer-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 12px 24px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-link:hover {
+            background: rgba(255,255,255,0.2);
+            border-color: rgba(255,255,255,0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .copyright {
+            color: rgba(255,255,255,0.7);
+            font-size: 14px;
+            margin-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .nav-links {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="marketing-container">
+        <!-- Hero Marketing Image -->
+        <div class="hero-image">
+            <div class="floating-elements">
+                <div class="floating-element"></div>
+                <div class="floating-element"></div>
+                <div class="floating-element"></div>
+            </div>
+            <div class="hero-content">
+                <div class="hero-title">Renamr</div>
+                <div class="hero-subtitle">Easy, fast and FREE renaming app for MacOS!</div>
+                
+                <div class="app-mockup">
+                    <div class="mockup-titlebar">
+                        <div class="traffic-light red"></div>
+                        <div class="traffic-light yellow"></div>
+                        <div class="traffic-light green"></div>
+                        <div class="window-title">Renamr</div>
+                    </div>
+                    <div class="app-content">
+                        <div class="app-header">
+                            <div class="app-title">Renamr</div>
+                            <div class="app-description">Easy, fast and FREE renaming app for MacOS!</div>
+                        </div>
+                        
+                        <div class="drop-zone">
+                            <div class="drop-zone-title">Source Directory</div>
+                            <div class="drop-zone-subtitle">Drag and drop a folder here</div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <span class="form-label">File Extension:</span>
+                            <input type="text" class="form-input" value=".jpg" readonly>
+                            <span style="color: #999; font-size: 12px;">(leave empty for all files)</span>
+                        </div>
+                        
+                        <div class="checkbox-row">
+                            <div class="checkbox">✓</div>
+                            <span class="checkbox-label">Rename Files Sequentially</span>
+                        </div>
+                        
+                        <div class="form-row">
+                            <span class="form-label">Base Name:</span>
+                            <input type="text" class="form-input" placeholder="Enter base name" value="Photo">
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <button class="btn btn-primary">Start Renaming</button>
+                            <button class="btn btn-secondary">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Showcase -->
+        <div class="section-title">Powerful Features, Simple Interface</div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <span class="feature-icon">🔢</span>
+                <div class="feature-title">Sequential Renaming</div>
+                <div class="feature-description">Rename thousands of files with sequential numbering. Perfect for organizing photo collections, documents, or any batch of files.</div>
+            </div>
+            
+            <div class="feature-card">
+                <span class="feature-icon">📅</span>
+                <div class="feature-title">Date & Time Patterns</div>
+                <div class="feature-description">Automatically name files based on their creation date and time. Great for organizing files chronologically with custom formats.</div>
+            </div>
+            
+            <div class="feature-card">
+                <span class="feature-icon">🎲</span>
+                <div class="feature-title">Random Names</div>
+                <div class="feature-description">Generate completely random file names for anonymization or security purposes. Each name is guaranteed to be unique.</div>
+            </div>
+            
+            <div class="feature-card">
+                <span class="feature-icon">⚡</span>
+                <div class="feature-title">Lightning Fast</div>
+                <div class="feature-description">Process thousands of files in seconds. Drag, drop, configure, and rename - it's that simple.</div>
+            </div>
+            
+            <div class="feature-card">
+                <span class="feature-icon">🎯</span>
+                <div class="feature-title">File Type Filtering</div>
+                <div class="feature-description">Target specific file types or rename everything. Filter by extension to process exactly what you need.</div>
+            </div>
+            
+            <div class="feature-card">
+                <span class="feature-icon">🔄</span>
+                <div class="feature-title">Rename in Place</div>
+                <div class="feature-description">Option to rename files directly in their original location or create copies - you're in complete control.</div>
+            </div>
+        </div>
+
+        <!-- Promotional Banner -->
+        <div class="promo-banner">
+            <div class="floating-elements">
+                <div class="floating-element"></div>
+                <div class="floating-element"></div>
+                <div class="floating-element"></div>
+            </div>
+            <div class="promo-badge">✨ Essential Mac Utility</div>
+            <div class="promo-title">Transform Your File Organization</div>
+            <div class="promo-subtitle">Millions of files have been renamed with Renamr!</div>
+            <a href="https://apps.apple.com/us/app/renamr/id6746349676?mt=12" class="download-btn" target="_blank">Download from Mac App Store</a>
+            
+            <div class="app-store-badge">
+                <a href="https://apps.apple.com/us/app/renamr/id6746349676?mt=12" target="_blank">
+                    <img src="https://developer.apple.com/app-store/marketing/guidelines/images/badge-download-on-the-mac-app-store.svg" alt="Download on the Mac App Store">
+                </a>
+            </div>
+        </div>
+
+        <!-- Navigation Footer -->
+        <div class="nav-footer">
+            <div class="footer-title">Need Help or Have Questions?</div>
+            <div class="nav-links">
+                <a href="support.html" class="nav-link">
+                    <span>🛠️</span>
+                    Support & Help
+                </a>
+                <a href="privacy.html" class="nav-link">
+                    <span>🔒</span>
+                    Privacy Policy
+                </a>
+            </div>
+            <div class="copyright">
+                © 2025 Time Lapse Technologies. Made with ❤️ for file organization enthusiasts.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add smooth scroll animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.feature-card');
+            
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '0';
+                        entry.target.style.transform = 'translateY(30px)';
+                        entry.target.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                        
+                        setTimeout(() => {
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateY(0)';
+                        }, 100);
+                    }
+                });
+            }, observerOptions);
+            
+            cards.forEach(card => {
+                observer.observe(card);
+            });
+        });
+    </script>
+</body>
+</html>
